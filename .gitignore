@@ -1,0 +1,28 @@
+# Bí mật (secrets) — không bao giờ commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# C/C++ build output
+build/
+*.o
+*.obj
+*.exe
+
+# Editor / IDE (VS Code, PyCharm)
+.vscode/
+.idea/
+
+# File rác của hệ điều hành
+Thumbs.db
+desktop.ini
+.DS_Store
