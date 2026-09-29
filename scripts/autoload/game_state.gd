@@ -11,6 +11,10 @@ signal contracts_changed
 signal toast(text: String, kind: String)
 signal input_blocked_changed(blocked: bool)
 signal game_reset
+## Yêu cầu giao diện mở một bảng: "shop", "contracts", "blueprint", "pause".
+## Phát từ nơi khác (BuildController, bàn vẽ...), nên bỏ qua cảnh báo "signal không dùng".
+@warning_ignore("unused_signal")
+signal panel_requested(panel: String)
 
 const SAVE_VERSION := 1
 const HOME_PLOT := "HOME"
