@@ -1,0 +1,41 @@
+; Engine configuration file.
+; Được Godot đọc khi mở dự án. Có thể chỉnh trong Project > Project Settings.
+
+config_version=5
+
+[application]
+
+config/name="Builder Simulator"
+config/description="Game giả lập xây nhà thế giới mở: từ đào móng, xây tường, lợp mái đến hoàn thiện và nội thất."
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+InputActions="*res://scripts/autoload/input_actions.gd"
+Catalog="*res://scripts/autoload/catalog.gd"
+GameState="*res://scripts/autoload/game_state.gd"
+SaveSystem="*res://scripts/autoload/save_system.gd"
+
+[display]
+
+window/size/viewport_width=1600
+window/size/viewport_height=900
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[layer_names]
+
+3d_physics/layer_1="world"
+3d_physics/layer_2="blueprint"
+3d_physics/layer_3="furniture"
+3d_physics/layer_4="interactable"
+3d_physics/layer_5="player"
+3d_physics/layer_6="clearance"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/msaa_3d=1

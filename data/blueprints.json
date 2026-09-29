@@ -1,0 +1,95 @@
+{
+	"blueprints": [
+		{
+			"id": "nha_cap4_nho",
+			"name": "Nhà cấp 4 nhỏ (6 × 5 m, mái ngói)",
+			"size": [14, 14],
+			"roof": "gable",
+			"wall_height": 3.0,
+			"walls": [[4, 6, 10, 6], [10, 6, 10, 11], [4, 11, 10, 11], [4, 6, 4, 11]],
+			"openings": [
+				{"wall": 2, "type": "door", "offset": 2.4},
+				{"wall": 2, "type": "window", "offset": 0.6},
+				{"wall": 2, "type": "window", "offset": 4.2},
+				{"wall": 3, "type": "window", "offset": 1.8},
+				{"wall": 1, "type": "window", "offset": 1.8},
+				{"wall": 0, "type": "window", "offset": 2.4}
+			]
+		},
+		{
+			"id": "nha_cap4_2phong",
+			"name": "Nhà cấp 4 hai phòng (8 × 6 m, mái ngói)",
+			"size": [14, 14],
+			"roof": "gable",
+			"wall_height": 3.0,
+			"walls": [[3, 5, 11, 5], [11, 5, 11, 11], [3, 11, 11, 11], [3, 5, 3, 11], [7, 5, 7, 11]],
+			"openings": [
+				{"wall": 2, "type": "door", "offset": 1.4},
+				{"wall": 2, "type": "window", "offset": 5.2},
+				{"wall": 4, "type": "door", "offset": 3.6},
+				{"wall": 3, "type": "window", "offset": 2.4},
+				{"wall": 1, "type": "window", "offset": 2.4},
+				{"wall": 0, "type": "window", "offset": 1.4},
+				{"wall": 0, "type": "window", "offset": 5.4}
+			]
+		},
+		{
+			"id": "nha_mai_bang_L",
+			"name": "Nhà mái bằng chữ L (3 phòng)",
+			"size": [14, 14],
+			"roof": "flat",
+			"wall_height": 3.0,
+			"walls": [[2, 2, 6, 2], [6, 2, 6, 7], [6, 7, 12, 7], [12, 7, 12, 12], [2, 12, 12, 12],
+				[2, 2, 2, 12], [2, 7, 6, 7], [8, 7, 8, 12]],
+			"openings": [
+				{"wall": 4, "type": "door", "offset": 2.4},
+				{"wall": 6, "type": "door", "offset": 1.4},
+				{"wall": 7, "type": "door", "offset": 2.0},
+				{"wall": 4, "type": "window", "offset": 7.4},
+				{"wall": 0, "type": "window", "offset": 1.4},
+				{"wall": 3, "type": "window", "offset": 1.8},
+				{"wall": 5, "type": "window", "offset": 1.4},
+				{"wall": 5, "type": "window", "offset": 7.0},
+				{"wall": 2, "type": "window", "offset": 3.4}
+			]
+		},
+		{
+			"id": "nha_ong",
+			"name": "Nhà ống (5 × 12 m, mái bằng)",
+			"size": [14, 14],
+			"roof": "flat",
+			"wall_height": 3.0,
+			"walls": [[4, 1, 9, 1], [9, 1, 9, 13], [4, 13, 9, 13], [4, 1, 4, 13], [4, 4, 9, 4], [4, 8, 9, 8]],
+			"openings": [
+				{"wall": 2, "type": "door", "offset": 1.8},
+				{"wall": 2, "type": "window", "offset": 3.2},
+				{"wall": 5, "type": "door", "offset": 0.6},
+				{"wall": 4, "type": "door", "offset": 3.2},
+				{"wall": 0, "type": "window", "offset": 1.8},
+				{"wall": 3, "type": "window", "offset": 4.8},
+				{"wall": 1, "type": "window", "offset": 8.6},
+				{"wall": 1, "type": "window", "offset": 0.8}
+			]
+		},
+		{
+			"id": "nha_vuon",
+			"name": "Nhà vườn ba gian (10 × 6 m, mái ngói)",
+			"size": [14, 14],
+			"roof": "gable",
+			"wall_height": 3.0,
+			"walls": [[2, 4, 12, 4], [12, 4, 12, 10], [2, 10, 12, 10], [2, 4, 2, 10], [5, 4, 5, 10], [9, 4, 9, 10]],
+			"openings": [
+				{"wall": 2, "type": "door", "offset": 4.4},
+				{"wall": 2, "type": "window", "offset": 0.8},
+				{"wall": 2, "type": "window", "offset": 8.0},
+				{"wall": 4, "type": "door", "offset": 2.4},
+				{"wall": 5, "type": "door", "offset": 2.4},
+				{"wall": 0, "type": "window", "offset": 0.8},
+				{"wall": 0, "type": "window", "offset": 4.4},
+				{"wall": 0, "type": "window", "offset": 8.0},
+				{"wall": 3, "type": "window", "offset": 2.4},
+				{"wall": 1, "type": "window", "offset": 2.4}
+			]
+		}
+	]
+}

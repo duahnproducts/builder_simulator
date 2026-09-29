@@ -1,0 +1,37 @@
+# Bí mật (secrets) — không bao giờ commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# C/C++ build output
+build/
+*.o
+*.obj
+*.exe
+
+# Godot — thư mục cache/import do Godot tự tạo lại (file .import và .uid thì CẦN commit)
+.godot/
+/android/
+# File tạm của tools/lint.sh (ghi đè Project Settings) — không bao giờ commit
+override.cfg
+
+# Kết quả chạy test / ảnh chụp tự động
+/test_output/
+
+# Editor / IDE (VS Code, PyCharm)
+.vscode/
+.idea/
+
+# File rác của hệ điều hành
+Thumbs.db
+desktop.ini
+.DS_Store

@@ -1,0 +1,8 @@
+# Chuẩn hoá xuống dòng: mọi file văn bản dùng LF, kể cả khi clone trên Windows
+# (giống file Godot tự tạo cho dự án mới). Giữ các script .sh chạy được trong Git Bash/WSL/Linux
+# và tránh những diff chỉ toàn thay đổi CRLF ↔ LF.
+* text=auto eol=lf
+
+# Ảnh là file nhị phân: không bao giờ đổi nội dung.
+*.jpg binary
+*.png binary
