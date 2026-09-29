@@ -18,6 +18,13 @@ build/
 *.obj
 *.exe
 
+# Godot — thư mục cache/import do Godot tự tạo lại (file .import và .uid thì CẦN commit)
+.godot/
+/android/
+
+# Kết quả chạy test / ảnh chụp tự động
+/test_output/
+
 # Editor / IDE (VS Code, PyCharm)
 .vscode/
 .idea/
