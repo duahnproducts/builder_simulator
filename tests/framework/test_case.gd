@@ -106,6 +106,9 @@ func add_to_tree(node: Node) -> Node:
 
 static func _equal(a: Variant, b: Variant) -> bool:
 	# So sánh số nguyên với số thực (JSON trả float) theo giá trị.
+	# null thuần (Nil) và "Object null" (vd. property kiểu Resource chưa gán) coi như bằng nhau.
+	if a == null or b == null:
+		return a == null and b == null
 	var ta := typeof(a)
 	var tb := typeof(b)
 	if (ta == TYPE_INT or ta == TYPE_FLOAT) and (tb == TYPE_INT or tb == TYPE_FLOAT):

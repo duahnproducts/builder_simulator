@@ -1,10 +1,11 @@
 extends TestCase
-## Lưới an toàn: mọi script trong res://scripts phải load và biên dịch được.
+## Lưới an toàn: mọi script trong res://scripts và res://tools phải load và biên dịch được.
 
 
 func test_moi_script_bien_dich_duoc() -> void:
 	var files: Array[String] = []
 	_collect("res://scripts", files)
+	_collect("res://tools", files)
 	assert_gt(files.size(), 5, "phải tìm thấy script")
 	for path in files:
 		var script := load(path) as GDScript

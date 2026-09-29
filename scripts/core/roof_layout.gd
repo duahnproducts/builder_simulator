@@ -128,15 +128,25 @@ func tile_coords(k: int) -> Vector3i:
 
 func tile_transform(k: int) -> Transform3D:
 	var c := tile_coords(k)
-	var side := c.x
-	var along := (c.y + 0.5) * row_len  # khoảng cách theo mái dốc, tính từ mép mái
+	var r := r_start - BuildConst.ROOF_OVERHANG + (c.z + 0.5) * seg_len
+	return _slope_box(c.x, (c.y + 0.5) * row_len, r, seg_len, row_len)
+
+
+## Tấm phủ cả một mặt mái — dùng cho hình mờ và vùng nhắm khi lợp.
+func side_panel_transform(side: int) -> Transform3D:
+	var total := r_len + 2.0 * BuildConst.ROOF_OVERHANG
+	return _slope_box(side, slope_len / 2.0, r_start - BuildConst.ROOF_OVERHANG + total / 2.0,
+			total, slope_len)
+
+
+## Hộp nằm trên mặt mái bên `side`: tâm cách mép mái `along` (đo theo mái dốc) và ở vị trí r.
+func _slope_box(side: int, along: float, r: float, r_size: float, slope_size: float) -> Transform3D:
 	var d := along * cos(pitch) - BuildConst.ROOF_OVERHANG  # khoảng cách ngang từ mặt ngoài tường
 	var s := s_start + d if side == 0 else s_start + s_len - d
-	var r := r_start - BuildConst.ROOF_OVERHANG + (c.z + 0.5) * seg_len
 	var n := roof_normal(side)
 	var center := point(r, s, roof_height_at(d)) + n * (BuildConst.ROOF_TILE_THICKNESS / 2.0)
 	return GeomUtil.box_transform(center, axis_r(), n,
-			Vector3(seg_len, BuildConst.ROOF_TILE_THICKNESS, row_len))
+			Vector3(r_size, BuildConst.ROOF_TILE_THICKNESS, slope_size))
 
 
 func ridge_transform(j: int) -> Transform3D:

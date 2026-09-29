@@ -1,0 +1,36 @@
+{
+	"_ghi_chu": "Tiền công = dự toán vật tư × margin (làm tròn 100.000 đ). min_reputation: uy tín tối thiểu để nhận.",
+	"start_money": 120000000,
+	"contracts": [
+		{
+			"id": "hd01", "client": "Chú Tư", "title": "Nhà cấp 4 nhỏ cho chú Tư",
+			"blueprint": "nha_cap4_nho", "plot": "A1", "margin": 1.6, "min_reputation": 0, "reputation": 1,
+			"furniture": {"bed": 1, "table": 1, "chair": 2, "wardrobe": 1},
+			"desc": "Chú Tư về hưu, muốn một căn nhà cấp 4 nhỏ, mái ngói đỏ, đủ chỗ ngủ và bàn ăn."
+		},
+		{
+			"id": "hd02", "client": "Cô Lan", "title": "Nhà hai phòng cho cô Lan",
+			"blueprint": "nha_cap4_2phong", "plot": "A2", "margin": 1.6, "min_reputation": 1, "reputation": 1,
+			"furniture": {"bed": 1, "sofa": 1, "tv": 1, "table": 1, "chair": 2, "wardrobe": 1},
+			"desc": "Cô Lan cần phòng khách rộng và một phòng ngủ riêng."
+		},
+		{
+			"id": "hd03", "client": "Anh Minh", "title": "Nhà chữ L mái bằng cho anh Minh",
+			"blueprint": "nha_mai_bang_L", "plot": "A3", "margin": 1.55, "min_reputation": 2, "reputation": 2,
+			"furniture": {"bed": 2, "sofa": 1, "tv": 1, "kitchen": 1, "fridge": 1, "table": 1, "chair": 4},
+			"desc": "Gia đình trẻ, cần hai phòng ngủ và bếp. Mái bằng để sau này lên thêm tầng."
+		},
+		{
+			"id": "hd04", "client": "Bác Hùng", "title": "Nhà ống cho gia đình bác Hùng",
+			"blueprint": "nha_ong", "plot": "A4", "margin": 1.55, "min_reputation": 3, "reputation": 2,
+			"furniture": {"bed": 1, "kitchen": 1, "fridge": 1, "toilet": 1, "basin": 1, "sofa": 1, "altar": 1},
+			"desc": "Nhà ống ba gian nối tiếp: phòng khách có bàn thờ, phòng ngủ, bếp và khu vệ sinh."
+		},
+		{
+			"id": "hd05", "client": "Ông bà Năm", "title": "Nhà vườn ba gian cho ông bà Năm",
+			"blueprint": "nha_vuon", "plot": "A5", "margin": 1.5, "min_reputation": 5, "reputation": 3,
+			"furniture": {"bed": 2, "altar": 1, "table": 1, "chair": 4, "sofa": 1, "tv": 1, "bookshelf": 1, "plant": 2},
+			"desc": "Nhà vườn truyền thống: gian giữa thờ cúng và tiếp khách, hai gian bên là phòng ngủ."
+		}
+	]
+}

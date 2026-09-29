@@ -1,0 +1,12 @@
+{
+	"_ghi_chu": "position = toạ độ thế giới (x, z) của góc (0,0) lô đất; yaw = góc xoay (độ). Mặt trước lô đất (z lớn) luôn hướng ra đường.",
+	"plots": [
+		{"id": "A1", "name": "Lô A1", "position": [-70, -20], "yaw": 0, "size": [14, 14]},
+		{"id": "A2", "name": "Lô A2", "position": [-50, -20], "yaw": 0, "size": [14, 14]},
+		{"id": "A3", "name": "Lô A3", "position": [-30, -20], "yaw": 0, "size": [14, 14]},
+		{"id": "A4", "name": "Lô A4", "position": [16, -20], "yaw": 0, "size": [14, 14]},
+		{"id": "A5", "name": "Lô A5", "position": [36, -20], "yaw": 0, "size": [14, 14]},
+		{"id": "A6", "name": "Lô A6", "position": [56, -20], "yaw": 0, "size": [14, 14]},
+		{"id": "HOME", "name": "Đất nhà bạn", "position": [7, 20], "yaw": 180, "size": [14, 14], "own": true}
+	]
+}
