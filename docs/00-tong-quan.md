@@ -73,10 +73,12 @@ tools/           script cài Godot, chạy test, chụp ảnh
 
 ## Chạy test
 
-- Linux/cloud: `tools/run_tests.sh` (thêm `--filter=ten` để lọc).
-- Windows (PowerShell, đứng ở thư mục dự án):
-  `& "C:\duong\dan\Godot_v4.7.2-stable_win64_console.exe" --headless --path . res://tests/runner.tscn`
-  Mã thoát 0 là đạt hết.
+- Linux/cloud: `tools/run_tests.sh` (thêm `--filter=ten` để lọc); `tools/lint.sh` chạy test với
+  mọi cảnh báo GDScript bị coi là lỗi.
+- Windows (PowerShell): xem mục "Chạy test" trong `README.md`. Mã thoát 0 là đạt hết.
+- Bộ test có 3 tầng: `unit/` (logic thuần), `integration/` (scene, vật lý, raycast, giao diện),
+  `acceptance/` (chơi trọn game trên scene chính qua `AutoBuilder` — "thợ tự động" nhắm camera và bấm
+  chuột như người thật). Runner bắt cả lỗi runtime và rò bộ nhớ, và dùng thư mục lưu riêng.
 
 ## Danh sách tài liệu
 

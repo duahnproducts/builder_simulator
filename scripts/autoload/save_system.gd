@@ -1,6 +1,10 @@
 extends Node
 ## Lưu/tải ván chơi ra file JSON trong user://saves/. Autoload tên "SaveSystem".
 ## Xem docs/06-luu-game.md (có phần an toàn: chỉ dùng JSON, giới hạn kích thước, ghi nguyên tử).
+##
+## QUY TẮC AN TOÀN: file lưu là dữ liệu không đáng tin — chỉ đọc bằng JSON.parse().
+## KHÔNG dùng load()/ResourceLoader, str_to_var() hay bytes_to_var_with_objects() với file của người
+## dùng: chúng tạo được Object (kể cả script) và có thể chạy mã độc khi mở file lưu do người khác gửi.
 
 signal saved(slot: String)
 signal loaded(slot: String)

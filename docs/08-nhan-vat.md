@@ -8,7 +8,7 @@ Mọi hệ thống xây dựng **không phụ thuộc** vào nhân vật cụ th
 | # | Yêu cầu | Vì sao |
 |---|---|---|
 | 1 | Nằm trong nhóm (group) `"player"` | SaveSystem tìm nhân vật qua nhóm này để lưu vị trí |
-| 2 | Có một `Camera3D` đang active (`current = true`) | `BuildController` bắn tia từ **camera đang active** để biết bạn nhắm vào đâu |
+| 2 | Có một `Camera3D` đang active (`current = true`, đặt **một lần** trong `_ready()`, đừng đặt lại mỗi frame) | `BuildController` bắn tia từ **camera đang active** để biết bạn nhắm vào đâu. Bài nghiệm thu mượn camera riêng để "nhìn thay" người chơi; đặt lại `current` mỗi frame sẽ giành mất camera đó |
 | 3 | Đứng yên khi `GameState.is_input_blocked()` là `true` | Lúc đó người chơi đang mở cửa hàng, menu... |
 | 4 | Lớp va chạm: **layer 5** (player); **mask 1 + 3** (world, furniture) | Không va vào lớp 2 (blueprint), nên đi xuyên qua hình mờ của tường chưa xây |
 | 5 | *(Tuỳ chọn)* `get_save_state() -> Dictionary` và `apply_save_state(data)` | Để lưu/tải vị trí và hướng nhìn |
@@ -60,4 +60,6 @@ Làm lần lượt; xong mỗi bước thì chạy thử rồi mới sang bướ
 ## Tự kiểm tra
 - Viết test theo mẫu trong `tests/integration/test_build_controller.gd`: tạo nhân vật của bạn,
   đặt vào một căn nhà, rồi kiểm tra `BuildController` nhắm được vào tường qua camera của nhân vật.
-- Chạy `tools/run_tests.sh` (Linux) hoặc lệnh PowerShell trong `docs/00-tong-quan.md`.
+- Chạy toàn bộ test (lệnh PowerShell trong `README.md`). Bài nghiệm thu
+  `tests/acceptance/test_choi_tron_game.gd` dựng scene chính **với nhân vật của bạn** rồi chơi trọn
+  một hợp đồng, kể cả lưu/tải vị trí nhân vật (F5/F9) — vẫn đạt là giao kèo đã đúng.
