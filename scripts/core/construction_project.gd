@@ -522,8 +522,11 @@ func to_dict() -> Dictionary:
 
 ## Dựng lại công trình từ dữ liệu lưu. Mọi giá trị bị kẹp vào khoảng hợp lệ,
 ## nên file lưu bị sửa tay cũng không làm hỏng game. Không trừ vật tư trong kho.
+## Trả về null nếu bản vẽ trong file không hợp lệ (không thể dựng hình đúng).
 static func from_dict(data: Dictionary, p_inventory: Inventory) -> ConstructionProject:
 	var bp := Blueprint.from_dict(DataUtil.to_dict(data.get("blueprint")))
+	if not BlueprintValidator.validate(bp).is_empty():
+		return null
 	var p := ConstructionProject.new(bp, p_inventory, str(data.get("plot", "")))
 	var req := DataUtil.to_dict(data.get("required_furniture"))
 	for key: Variant in req:
@@ -573,6 +576,26 @@ static func from_dict(data: Dictionary, p_inventory: Inventory) -> ConstructionP
 	p._next_uid = maxi(DataUtil.to_int(data.get("next_uid"), 1), max_uid + 1)
 	p._refresh_done_cache()
 	return p
+
+
+## Bỏ nội thất và màu sơn không có trong danh mục (file lưu sửa tay hoặc từ bản game cũ).
+## Hai hàm kiểm tra (String → bool) được truyền vào để lớp này không phụ thuộc Catalog.
+func drop_unknown_items(is_furniture: Callable, is_paint: Callable) -> void:
+	var kept: Array[Dictionary] = []
+	for f in furniture:
+		if is_furniture.call(str(f["id"])):
+			kept.append(f)
+	furniture = kept
+	for item_id: String in required_furniture.keys():
+		if not is_furniture.call(item_id):
+			required_furniture.erase(item_id)
+	for w in walls.size():
+		for side in 2:
+			var color: String = paint_color[w][side]
+			if not color.is_empty() and not is_paint.call(color):
+				paint_color[w][side] = ""
+				paint_progress[w][side] = 0.0
+	_refresh_done_cache()
 
 
 # ─── Nội bộ ─────────────────────────────────────────────────────────────────

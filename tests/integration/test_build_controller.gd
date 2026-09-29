@@ -212,3 +212,16 @@ func test_mo_giao_dien_thi_ngung_nham() -> void:
 	GameState.block_input("test", true)
 	await wait_physics_frames(2)
 	assert_eq(ctrl.hint, "")
+
+
+func test_nhin_vao_vat_khong_phai_nha_khong_bao_loi() -> void:
+	await _setup()
+	var ground := Colliders.make_body(Colliders.WORLD, {}, "Ground")
+	Colliders.add_box_xform(ground, Transform3D(Basis.from_scale(Vector3(4, 0.2, 4)), Vector3(20, -0.1, 20)))
+	add_to_tree(ground)
+	await wait_physics_frames(1)
+	# Runner bắt mọi lỗi runtime: get_meta("house", null) từng báo lỗi mỗi frame khi nhìn xuống đất.
+	_aim(Vector3(20, 2, 20), Vector3(20, 0, 20))
+	assert_eq(ctrl.current.get("kind"), "world", "vật không có metadata thì coi là 'world'")
+	assert_eq(ctrl.current_action(), "")
+	assert_eq(ctrl.perform_primary(), -1, "không có gì để làm")

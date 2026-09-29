@@ -291,7 +291,11 @@ func from_dict(data: Dictionary) -> String:
 	for plot_id: String in projects.keys():
 		remove_project(plot_id)
 	wallet.balance = maxi(0, DataUtil.to_int(data.get("money"), 0))
-	inventory.load_dict(DataUtil.to_dict(data.get("inventory")))
+	var saved_inventory := DataUtil.to_dict(data.get("inventory"))
+	for item_id: Variant in saved_inventory.keys():
+		if not Catalog.has_item(str(item_id)):
+			saved_inventory.erase(item_id)  # vật phẩm lạ (file sửa tay / bản cũ)
+	inventory.load_dict(saved_inventory)
 	reputation = maxi(0, DataUtil.to_int(data.get("reputation"), 0))
 	contract_state.clear()
 	var saved_contracts := DataUtil.to_dict(data.get("contracts"))
@@ -305,12 +309,21 @@ func from_dict(data: Dictionary) -> String:
 	day = maxi(1, DataUtil.to_int(data.get("day"), 1))
 	time_of_day = clampf(DataUtil.to_float(data.get("time"), 7.0), 0.0, 23.99)
 	var saved_projects := DataUtil.to_dict(data.get("projects"))
+	var skipped := 0
 	for plot_id: Variant in saved_projects:
-		if Catalog.plot(str(plot_id)).is_empty():
+		var plot := Catalog.plot(str(plot_id))
+		if plot.is_empty():
 			continue
 		var p := ConstructionProject.from_dict(DataUtil.to_dict(saved_projects[plot_id]), inventory)
+		var plot_size := Catalog.plot_size(plot)
+		if p == null or p.blueprint.size.x > plot_size.x or p.blueprint.size.y > plot_size.y:
+			skipped += 1
+			continue
+		p.drop_unknown_items(Catalog.is_furniture, Catalog.is_paint)
 		add_project(str(plot_id), p)
 	contracts_changed.emit()
+	if skipped > 0:
+		notify("Bỏ qua %d công trình có bản vẽ hỏng trong file lưu." % skipped, "warn")
 	return ""
 
 

@@ -13,6 +13,8 @@ const AUTOSAVE_SLOT := "auto"
 const QUICK_SLOT := "quick"
 const SLOT_CHARS := "abcdefghijklmnopqrstuvwxyz0123456789_"
 
+## Thư mục chứa file lưu. Bộ test đổi sang thư mục riêng để không bao giờ đụng file lưu thật.
+var save_dir := DIR
 var autosave_enabled := true
 ## Giới hạn kích thước file lưu (biến để test có thể hạ xuống).
 var max_file_bytes := MAX_FILE_BYTES
@@ -38,15 +40,15 @@ static func is_valid_slot(slot: String) -> bool:
 	return true
 
 
-static func slot_path(slot: String) -> String:
-	return DIR.path_join(slot + ".json")
+func slot_path(slot: String) -> String:
+	return save_dir.path_join(slot + ".json")
 
 
 ## Lưu ván chơi. Trả về "" nếu thành công, ngược lại là lý do.
 func save_slot(slot: String) -> String:
 	if not is_valid_slot(slot):
 		return "Tên ô lưu không hợp lệ."
-	DirAccess.make_dir_recursive_absolute(DIR)
+	DirAccess.make_dir_recursive_absolute(save_dir)
 	var data := {
 		"format": FORMAT,
 		"saved_at": Time.get_datetime_string_from_system(false, true),
@@ -91,7 +93,10 @@ func read_slot(slot: String) -> Dictionary:
 		return {"error": "Tên ô lưu không hợp lệ."}
 	var path := slot_path(slot)
 	if not FileAccess.file_exists(path):
-		return {"error": "Chưa có bản lưu ở ô này."}
+		# Game tắt đúng lúc đang thay file (file cũ đã xoá, file mới còn tên .tmp): dùng file mới.
+		if not FileAccess.file_exists(path + ".tmp"):
+			return {"error": "Chưa có bản lưu ở ô này."}
+		path += ".tmp"
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		return {"error": "Không mở được file lưu."}
@@ -110,8 +115,7 @@ func read_slot(slot: String) -> Dictionary:
 func slot_info(slot: String) -> Dictionary:
 	var result := read_slot(slot)
 	if result.has("error"):
-		return {"exists": FileAccess.file_exists(slot_path(slot)) if is_valid_slot(slot) else false,
-				"error": result["error"]}
+		return {"exists": _slot_file_exists(slot), "error": result["error"]}
 	var data: Dictionary = result["data"]
 	var game := DataUtil.to_dict(data.get("game"))
 	return {
@@ -123,8 +127,16 @@ func slot_info(slot: String) -> Dictionary:
 
 
 func delete_slot(slot: String) -> void:
-	if is_valid_slot(slot) and FileAccess.file_exists(slot_path(slot)):
-		DirAccess.remove_absolute(slot_path(slot))
+	if not is_valid_slot(slot):
+		return
+	for path: String in [slot_path(slot), slot_path(slot) + ".tmp"]:
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(path)
+
+
+func _slot_file_exists(slot: String) -> bool:
+	return is_valid_slot(slot) and (FileAccess.file_exists(slot_path(slot))
+			or FileAccess.file_exists(slot_path(slot) + ".tmp"))
 
 
 func _player() -> Node:

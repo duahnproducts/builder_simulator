@@ -1,3 +1,4 @@
+class_name Main
 extends Node3D
 ## Scene gốc của game: dựng thế giới, nhân vật, bộ điều khiển xây dựng và giao diện.
 ##

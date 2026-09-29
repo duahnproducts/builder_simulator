@@ -17,6 +17,8 @@ var _roof: RoofView
 var _furniture: Dictionary = {}
 var _foundation_target: StaticBody3D
 var _slab_body: StaticBody3D
+## Số ô móng đã có hộp va chạm trong _slab_body (ô đổ rồi thì không bao giờ mất đi).
+var _slab_shapes := 0
 var _roof_slab_target: StaticBody3D
 
 
@@ -53,7 +55,7 @@ func refresh_all() -> void:
 	_floor.set_hologram_visible(p.are_walls_done() and not p.floor_tiles.is_complete())
 	_floor.refresh()
 	_foundation_target.collision_layer = 0 if p.pour.is_complete() else Colliders.BLUEPRINT
-	_rebuild_slab_body()
+	_sync_slab_body()
 	for w in _walls.size():
 		_walls[w].set_laid(p.bricks[w], p.pour.is_complete())
 		for side in 2:
@@ -75,7 +77,7 @@ func refresh_all() -> void:
 ## Thông tin mục tiêu khi raycast trúng một collider của nhà này; {} nếu không phải của nhà này.
 ## Kết quả: {"kind", "pos" (toạ độ lô đất), "normal", "house", và tuỳ loại: "index", "uid", "cell", "side"}.
 func describe_hit(collider: Object, world_pos: Vector3, world_normal: Vector3) -> Dictionary:
-	if collider == null or collider.get_meta("house", null) != self:
+	if collider == null or not collider.has_meta("house") or collider.get_meta("house") != self:
 		return {}
 	var pos := to_local(world_pos)
 	var normal := (global_transform.basis.inverse() * world_normal).normalized()
@@ -142,7 +144,7 @@ func _on_changed(kind: String, index: int) -> void:
 			_dig.refresh()
 		"pour":
 			_pour.refresh()
-			_rebuild_slab_body()
+			_sync_slab_body()
 		"brick":
 			_walls[index].set_laid(p.bricks[index], true)
 		"gable":
@@ -240,11 +242,15 @@ static func _slab_transform(r: Rect2, y0: float, y1: float) -> Transform3D:
 			Vector3(r.get_center().x, (y0 + y1) / 2.0, r.get_center().y))
 
 
-func _rebuild_slab_body() -> void:
-	Colliders.clear(_slab_body)
-	for c in project.pour.order:
-		Colliders.add_box_xform(_slab_body, _slab_transform(project.analysis.slab_rect(c), 0.0,
+## Thêm hộp va chạm cho các ô móng mới đổ. Chỉ thêm, không dựng lại: hộp mới chỉ có hiệu lực
+## từ frame vật lý sau, nên xoá đi dựng lại sẽ làm nền "biến mất" một frame (tia xuyên qua,
+## nhân vật hụt chân) mỗi khi một giai đoạn hoàn thành.
+func _sync_slab_body() -> void:
+	var order := project.pour.order
+	for i in range(_slab_shapes, order.size()):
+		Colliders.add_box_xform(_slab_body, _slab_transform(project.analysis.slab_rect(order[i]), 0.0,
 				BuildConst.FOUNDATION_TOP))
+	_slab_shapes = maxi(_slab_shapes, order.size())
 
 
 func _build_opening(k: int) -> OpeningView:

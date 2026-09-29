@@ -167,3 +167,30 @@ func test_mai_bang_co_vung_nham() -> void:
 		project.pour_roof_cell(c)
 	assert_eq(view.cells_view("roof").visible_count(), project.roof_cells.total())
 	assert_eq(view.roof_slab_target().collision_layer, 0)
+
+
+func test_nen_mong_khong_bien_mat_khi_giai_doan_hoan_thanh() -> void:
+	_setup()
+	_foundation()
+	var body := view.slab_body()
+	assert_eq(body.get_child_count(), project.pour.total(), "mỗi ô móng một hộp va chạm")
+	var first := body.get_child(0)
+	_walls()  # xây xong tường → refresh_all()
+	view.refresh_all()
+	assert_eq(body.get_child_count(), project.pour.total())
+	assert_true(body.get_child(0) == first,
+			"không dựng lại hộp va chạm của nền (hộp mới chỉ có hiệu lực từ frame vật lý sau)")
+	await wait_physics_frames(1)
+	var hit := _ray(Vector3(5.5, 2.0, 4.5), Vector3(5.5, -1.0, 4.5), Colliders.WORLD)
+	assert_eq(hit.get("kind"), "slab")
+
+
+func test_va_cham_khong_phai_cua_nha_thi_bo_qua() -> void:
+	_setup()
+	var other := Colliders.make_body(Colliders.WORLD, {}, "Other")
+	add_to_tree(other)
+	assert_eq(view.describe_hit(other, Vector3.ZERO, Vector3.UP), {}, "vật không có metadata")
+	var foreign := Colliders.make_body(Colliders.WORLD, {"kind": "wall", "house": Node.new()}, "Foreign")
+	add_to_tree(foreign)
+	assert_eq(view.describe_hit(foreign, Vector3.ZERO, Vector3.UP), {}, "va chạm của nhà khác")
+	(foreign.get_meta("house") as Node).free()

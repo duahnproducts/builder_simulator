@@ -122,10 +122,10 @@ static func _label(base: String, msg: String) -> String:
 	return base if msg.is_empty() else "%s — %s" % [msg, base]
 
 
-## Tìm dòng trong file test đã gọi assert (bỏ qua các frame của TestCase).
+## Tìm dòng trong file test đã gọi assert (bỏ qua các frame của bộ khung test: TestCase, AutoBuilder...).
 static func _where() -> String:
 	for frame: Dictionary in get_stack():
 		var source: String = frame.get("source", "")
-		if not source.ends_with("test_case.gd"):
+		if not source.begins_with("res://tests/framework/"):
 			return "%s:%d" % [source.get_file(), frame.get("line", 0)]
 	return "?"

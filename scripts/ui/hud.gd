@@ -126,6 +126,10 @@ func money_text() -> String:
 	return _money.text
 
 
+func project_text() -> String:
+	return _project_title.text
+
+
 ## Hình chữ nhật (toạ độ màn hình) của các thành phần chính — để test bố cục không tràn ra ngoài.
 func element_rects() -> Dictionary:
 	return {

@@ -37,15 +37,27 @@ class ErrorCatcher extends Logger:
 		return out
 
 
+## Thư mục lưu game riêng cho test — test không bao giờ đụng vào file lưu thật của người chơi.
+const TEST_SAVE_DIR := "user://test_saves"
+
 var _catcher := ErrorCatcher.new()
 
 
 func _ready() -> void:
 	OS.add_logger(_catcher)
+	SaveSystem.save_dir = TEST_SAVE_DIR
+	SaveSystem.autosave_enabled = false
 	await get_tree().process_frame
 	var code := await _run_all(_parse_filter())
+	_remove_test_saves()
 	OS.remove_logger(_catcher)
 	get_tree().quit(code)
+
+
+func _remove_test_saves() -> void:
+	for file in DirAccess.get_files_at(TEST_SAVE_DIR):
+		DirAccess.remove_absolute(TEST_SAVE_DIR.path_join(file))
+	DirAccess.remove_absolute(TEST_SAVE_DIR)
 
 
 func _parse_filter() -> String:

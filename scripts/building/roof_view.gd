@@ -92,6 +92,10 @@ func ghost_visible() -> bool:
 	return _ghost.visible
 
 
+func target_body() -> StaticBody3D:
+	return _target
+
+
 func _multimesh(node_name: String, mesh: Mesh, count: int) -> MultiMeshInstance3D:
 	var mm := MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D

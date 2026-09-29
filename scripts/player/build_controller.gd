@@ -399,7 +399,8 @@ func _describe(hit: Dictionary) -> Dictionary:
 	if hit.is_empty():
 		return {}
 	var collider: Object = hit["collider"]
-	var house: Variant = collider.get_meta("house", null)
+	# Không dùng get_meta("house", null): Godot coi mặc định null là "không có mặc định" và báo lỗi.
+	var house: Variant = collider.get_meta("house") if collider.has_meta("house") else null
 	if house is HouseView:
 		return (house as HouseView).describe_hit(collider, hit["position"], hit["normal"])
 	if collider.has_meta("kind"):
