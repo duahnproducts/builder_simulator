@@ -10,7 +10,7 @@ var _camera := Camera3D.new()
 
 
 func _ready() -> void:
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT_DIR))
+	CaptureUtil.prepare_dir(OUT_DIR)
 	_setup_environment()
 	await _run()
 	get_tree().quit()

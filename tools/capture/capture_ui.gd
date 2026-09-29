@@ -6,7 +6,7 @@ const OUT_DIR := "res://test_output"
 
 
 func _ready() -> void:
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT_DIR))
+	CaptureUtil.prepare_dir(OUT_DIR)
 	GameState.new_game()
 	var main: Node = (load("res://scenes/main.tscn") as PackedScene).instantiate()
 	add_child(main)

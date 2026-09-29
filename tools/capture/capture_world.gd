@@ -9,7 +9,7 @@ var _world: World
 
 
 func _ready() -> void:
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT_DIR))
+	CaptureUtil.prepare_dir(OUT_DIR)
 	GameState.new_game()
 	_world = World.new()
 	add_child(_world)
