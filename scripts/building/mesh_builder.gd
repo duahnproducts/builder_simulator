@@ -42,6 +42,11 @@ func add_prism(xform: Transform3D, color: Color) -> void:
 	_append(_template("prism"), xform, color)
 
 
+## Hình nón (đáy bán kính 0,5, cao 1, tâm ở giữa chiều cao) — dùng cho cây thông.
+func add_cone(xform: Transform3D, color: Color) -> void:
+	_append(_template("cone"), xform, color)
+
+
 ## Thanh tiết diện vuông nối hai điểm (thanh gỗ, cột...).
 func add_beam(from: Vector3, to: Vector3, thickness: float, color: Color) -> void:
 	var axis := to - from
@@ -126,6 +131,14 @@ static func _template(kind: String) -> Array:
 				cyl.radial_segments = 12
 				cyl.rings = 0
 				mesh = cyl
+			"cone":
+				var cone := CylinderMesh.new()
+				cone.top_radius = 0.0
+				cone.bottom_radius = 0.5
+				cone.height = 1.0
+				cone.radial_segments = 9
+				cone.rings = 0
+				mesh = cone
 			"ball":
 				var ball := SphereMesh.new()
 				ball.radius = 0.5
