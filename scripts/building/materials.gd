@@ -2,7 +2,7 @@ class_name Materials
 extends RefCounted
 ## Vật liệu (material) và màu dùng chung. Mỗi loại chỉ tạo một lần rồi dùng lại.
 
-const HOLOGRAM_COLOR := Color(0.35, 0.8, 1.0, 0.2)
+const HOLOGRAM_COLOR := Color(0.35, 0.8, 1.0, 0.12)
 const GHOST_COLOR := Color(0.45, 1.0, 0.55, 0.55)
 const GHOST_BAD_COLOR := Color(1.0, 0.35, 0.3, 0.55)
 

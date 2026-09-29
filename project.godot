@@ -16,6 +16,7 @@ config/icon="res://icon.svg"
 InputActions="*res://scripts/autoload/input_actions.gd"
 Catalog="*res://scripts/autoload/catalog.gd"
 GameState="*res://scripts/autoload/game_state.gd"
+SaveSystem="*res://scripts/autoload/save_system.gd"
 
 [display]
 

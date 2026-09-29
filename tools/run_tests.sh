@@ -37,5 +37,11 @@ if grep -qE "Parse Error|Failed to load script" "$log"; then
 	echo "Phát hiện lỗi parse/load script trong log." >&2
 	status=1
 fi
+# Rò bộ nhớ lúc thoát (thường do hai class tham chiếu kiểu của nhau thành vòng) cũng là lỗi.
+if grep -qE "leaked at exit|still in use at exit" "$log"; then
+	grep -E "leaked at exit|still in use at exit" "$log" >&2
+	echo "Phát hiện rò bộ nhớ lúc thoát — chạy lại với --verbose để xem chi tiết." >&2
+	status=1
+fi
 rm -f "$log"
 exit "$status"
