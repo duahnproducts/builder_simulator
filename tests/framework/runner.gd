@@ -55,6 +55,8 @@ func _ready() -> void:
 
 
 func _remove_test_saves() -> void:
+	if not DirAccess.dir_exists_absolute(TEST_SAVE_DIR):
+		return
 	for file in DirAccess.get_files_at(TEST_SAVE_DIR):
 		DirAccess.remove_absolute(TEST_SAVE_DIR.path_join(file))
 	DirAccess.remove_absolute(TEST_SAVE_DIR)

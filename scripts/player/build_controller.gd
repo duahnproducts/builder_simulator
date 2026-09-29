@@ -23,6 +23,8 @@ const REPEAT := {
 	"dig": 0.22, "pour": 0.28, "brick": 0.1, "gable": 0.1, "opening": 0.6, "roof": 0.14,
 	"roof_cell": 0.28, "plaster": 0.1, "paint": 0.1, "floor": 0.2, "furniture": 0.4, "remove": 0.4,
 }
+## Thao tác chỉ làm một lần cho mỗi lần bấm (giữ chuột cũng không lặp).
+const SINGLE_CLICK: Array[String] = ["furniture", "remove"]
 const R = ConstructionProject.Result
 
 var mode: Mode = Mode.BUILD
@@ -34,6 +36,10 @@ var hint := ""
 var placement: PlacementController
 
 var _cooldown := 0.0
+## Loại thao tác đang lặp khi giữ chuột ("" khi đã thả chuột).
+var _held_action := ""
+## Đã làm xong thao tác một-lần-bấm, chờ thả chuột.
+var _wait_release := false
 var _last_toast := ""
 var _last_toast_ms := -100000
 
@@ -50,12 +56,34 @@ func _physics_process(delta: float) -> void:
 	if GameState.is_input_blocked():
 		placement.hide_ghost()
 		_set_hint("")
+		_release_primary()
 		return
 	scan()
-	if Input.is_action_pressed("primary") and _cooldown <= 0.0 and not current_action().is_empty():
-		var action := current_action()
-		var result := perform_primary()
-		_cooldown = REPEAT.get(action, 0.25) if result == R.OK else 0.4
+	if Input.is_action_pressed("primary"):
+		_hold_primary()
+	else:
+		_release_primary()
+
+
+## Giữ chuột trái: lặp lại thao tác theo nhịp REPEAT, nhưng chỉ đúng loại thao tác lúc bắt đầu giữ —
+## đào xong một ô thì không tự đổ bê tông, xây xong tường thì không tự trát (tốn xi măng ngoài ý muốn).
+## Muốn sang việc khác thì thả chuột ra rồi bấm lại.
+func _hold_primary() -> void:
+	var action := current_action()
+	if action.is_empty() or _wait_release or _cooldown > 0.0:
+		return
+	if _held_action.is_empty():
+		_held_action = action
+	elif action != _held_action:
+		return
+	var result := perform_primary()
+	_cooldown = REPEAT.get(action, 0.25) if result == R.OK else 0.4
+	_wait_release = SINGLE_CLICK.has(action)
+
+
+func _release_primary() -> void:
+	_held_action = ""
+	_wait_release = false
 
 
 func _unhandled_input(event: InputEvent) -> void:

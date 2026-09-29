@@ -67,10 +67,14 @@ func update(hit: Dictionary, info: Dictionary, id: String) -> void:
 			reason = "Cần lắp cửa, lợp mái, sơn tường và lát nền xong trước."
 		elif not GameState.inventory.has(id):
 			reason = "Kho hết %s." % Catalog.item_name(id)
-		elif _overlaps(world_xform):
-			reason = "Vướng tường, cửa hoặc đồ khác."
 		else:
-			valid = true
+			var blocker := _blocker(world_xform)
+			if blocker == null:
+				valid = true
+			elif str(blocker.get_meta("kind", "")) == "door_clearance":
+				reason = "Chắn lối cửa đi — hãy chừa khoảng trống trước cửa."
+			else:
+				reason = "Vướng tường, cửa hoặc đồ khác."
 	_ghost.mesh = FurnitureView.mesh_for(id)
 	_ghost.material_override = Materials.ghost(not valid)
 	_ghost.global_transform = world_xform
@@ -87,14 +91,18 @@ func place() -> int:
 	return house.project.place_furniture(item_id, local_pos, yaw)
 
 
-func _overlaps(world_xform: Transform3D) -> bool:
+## Vật cản đầu tiên chồng lên món đồ đặt ở `world_xform`; null nếu chỗ đó trống.
+## Đồ phẳng (thảm) chỉ cần tránh tường; đồ khác còn phải tránh đồ đã đặt và khoảng trống trước cửa.
+func _blocker(world_xform: Transform3D) -> Object:
 	var size := Catalog.furniture_size(item_id)
 	var shape := BoxShape3D.new()
 	shape.size = Vector3(maxf(size.x - 0.04, 0.02), maxf(size.y - 0.06, 0.02), maxf(size.z - 0.04, 0.02))
 	var query := PhysicsShapeQueryParameters3D.new()
 	query.shape = shape
 	query.transform = world_xform * Transform3D(Basis.IDENTITY, Vector3(0, size.y / 2.0 + 0.03, 0))
-	query.collision_mask = Colliders.WORLD if size.y < FLAT_HEIGHT else Colliders.WORLD | Colliders.FURNITURE
+	query.collision_mask = Colliders.WORLD if size.y < FLAT_HEIGHT \
+			else Colliders.WORLD | Colliders.FURNITURE | Colliders.CLEARANCE
 	if house != null:
 		query.exclude = [house.slab_body().get_rid()]
-	return not get_world_3d().direct_space_state.intersect_shape(query, 1).is_empty()
+	var hits := get_world_3d().direct_space_state.intersect_shape(query, 1)
+	return null if hits.is_empty() else hits[0]["collider"]

@@ -47,7 +47,7 @@ autoload/ (GameState, Catalog, SaveSystem) ◄── player/ (điều khiển, r
 | Viên gạch | dài 0,4 m, cao 0,2 m, dày 0,2 m (= độ dày tường) |
 | Mặt móng | cao 0,3 m so với mặt đất |
 | Tường | cao 3,0 m (15 hàng gạch) |
-| Lớp va chạm | 1 world · 2 blueprint (hình mờ để nhắm) · 3 furniture · 4 interactable · 5 player |
+| Lớp va chạm | 1 world · 2 blueprint (hình mờ để nhắm) · 3 furniture · 4 interactable · 5 player · 6 clearance (khoảng trống trước cửa đi, chỉ dùng khi đặt nội thất) |
 | Code | Tên biến/hàm tiếng Anh; chú thích và chữ trong game tiếng Việt |
 
 ## Cấu trúc thư mục

@@ -8,7 +8,7 @@ Code: `scripts/ui/`. Toàn bộ giao diện dựng bằng code (không cần ké
 |---|---|
 | W A S D / mũi tên | Đi lại (Shift: chạy, Space: nhảy) |
 | Chuột | Nhìn |
-| Chuột trái (giữ) | Thao tác: đào, đổ, xây, lắp, lợp, trát, lát, sơn, đặt đồ, nhặt đồ |
+| Chuột trái | Thao tác: đào, đổ, xây, lắp, lợp, trát, lát, sơn, đặt đồ, nhặt đồ. **Giữ** để làm liên tục (xem dưới) |
 | 1 · 2 · 3 · 4 | Chế độ: Xây dựng · Sơn tường · Nội thất · Nhặt đồ |
 | Lăn chuột / Q · Z | Đổi màu sơn / món nội thất |
 | R | Xoay món nội thất 90° |
@@ -17,6 +17,13 @@ Code: `scripts/ui/`. Toàn bộ giao diện dựng bằng code (không cần ké
 | Esc | Đóng bảng đang mở / Menu tạm dừng |
 | F5 / F9 | Lưu nhanh / Tải nhanh |
 | F1 | Bật/tắt bảng hướng dẫn |
+
+### Giữ chuột trái
+
+Giữ chuột thì thao tác lặp lại theo nhịp (`BuildController.REPEAT`, vd. 0,1 giây/viên gạch), nhưng
+**chỉ lặp đúng loại việc lúc bắt đầu giữ**. Ví dụ: giữ chuột lia qua các ô móng thì chỉ đào, không
+tự đổ bê tông ngay sau khi đào; xây xong bức tường thì dừng, không tự trát (tránh tốn xi măng ngoài
+ý muốn). Muốn sang việc khác thì thả chuột rồi bấm lại. Đặt và nhặt nội thất: mỗi lần bấm một món.
 
 ## Thành phần
 

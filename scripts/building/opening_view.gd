@@ -5,9 +5,13 @@ extends Node3D
 ## Chưa lắp: hình mờ khung cửa + vùng nhắm (chỉ khi bức tường chứa nó đã xây xong).
 ## Đã lắp: khung + cánh; cửa đi mở/đóng được bằng phím tương tác.
 ## Hệ toạ độ riêng: x dọc tường, y hướng lên, z xuyên qua tường; gốc ở tâm lỗ cửa.
+## Cửa đi có thêm vùng "khoảng trống" (lớp clearance): chỗ cánh cửa quét qua và lối đi phía bên kia,
+## để không đặt được nội thất chắn cửa.
 
 const FRAME := 0.06
 const DEPTH := 0.24
+## Lối đi phải chừa ở phía cửa không mở vào (m).
+const PASSAGE_DEPTH := 0.6
 
 var index := -1
 var type := "door"
@@ -21,6 +25,7 @@ var open_toward := 1.0
 var _house: Node
 var _holo: MeshInstance3D
 var _target: StaticBody3D
+var _clearance: StaticBody3D
 var _installed: Node3D
 var _pivot: Node3D
 var _tween: Tween
@@ -48,6 +53,11 @@ func setup(g: WallGeometry, rect: Rect2, k: int, opening_type: String, house: No
 	_target = Colliders.make_body(Colliders.BLUEPRINT, {"kind": "opening", "index": k, "house": house}, "Target")
 	Colliders.add_box_xform(_target, Transform3D(Basis.from_scale(Vector3(width, height, 0.3)), Vector3.ZERO))
 	add_child(_target)
+	if type == "door":
+		_clearance = Colliders.make_body(Colliders.CLEARANCE,
+				{"kind": "door_clearance", "index": k, "house": house}, "Clearance")
+		Colliders.add_box_xform(_clearance, clearance_box())
+		add_child(_clearance)
 
 
 ## wall_done: bức tường đã xây xong; is_installed: đã lắp cửa.
@@ -85,6 +95,19 @@ func set_open(value: bool, animate := false) -> void:
 
 func hologram_visible() -> bool:
 	return _holo.visible
+
+
+## Hộp khoảng trống của cửa đi (toạ độ riêng của cửa): phía cửa mở vào sâu bằng bề rộng cửa
+## (cánh cửa quét qua), phía bên kia chừa lối đi PASSAGE_DEPTH.
+func clearance_box() -> Transform3D:
+	var near := -(BuildConst.HALF_WALL + PASSAGE_DEPTH)
+	var far := BuildConst.HALF_WALL + width
+	var center_z := (near + far) / 2.0 * open_toward
+	return Transform3D(Basis.from_scale(Vector3(width, height, far - near)), Vector3(0, 0, center_z))
+
+
+func clearance_body() -> StaticBody3D:
+	return _clearance
 
 
 func target_body() -> StaticBody3D:

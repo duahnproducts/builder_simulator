@@ -28,7 +28,12 @@ Công trình hoàn thành khi mọi giai đoạn đều DONE.
 | Lắp cửa | Bức tường chứa cửa đã xây xong | 1 bộ cửa tương ứng |
 | Trát 1 mặt tường | Bức tường đó đã xây xong | ⌈diện tích / 6⌉ bao xi măng, trả khi bắt đầu |
 | Sơn 1 mặt tường | Mặt đó đã trát xong | ⌈diện tích / 12⌉ thùng sơn màu đã chọn; đổi màu là sơn lại từ đầu |
-| Đặt nội thất | Giai đoạn "Nội thất" đã mở | 1 món đồ; nhặt lại thì trả về kho |
+| Đặt nội thất | Giai đoạn "Nội thất" đã mở; không vướng tường, cửa, đồ khác, **không chắn cửa đi** | 1 món đồ; nhặt lại thì trả về kho |
+
+**Không chắn cửa đi:** mỗi cửa đi có một hộp "khoảng trống" (lớp va chạm 6 — clearance) gồm vùng
+cánh cửa quét qua (sâu bằng bề rộng cửa, phía cửa mở vào) và lối đi 0,6 m ở phía bên kia.
+`PlacementController` kiểm tra chồng lấn với lớp này (thảm thì được đặt, vì cánh cửa quét phía trên).
+Nhân vật và tia nhắm không va vào lớp này.
 
 ## Kết quả thao tác
 

@@ -9,6 +9,8 @@ const BLUEPRINT := 2
 const FURNITURE := 4
 const INTERACTABLE := 8
 const PLAYER := 16
+## Khoảng trống phải chừa (trước cửa đi): chỉ dùng khi kiểm tra chỗ đặt nội thất.
+const CLEARANCE := 32
 
 
 ## StaticBody3D rỗng trên lớp `layer`, gắn metadata để controller biết đây là gì.

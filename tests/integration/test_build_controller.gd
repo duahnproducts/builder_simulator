@@ -18,6 +18,7 @@ func before_each() -> void:
 
 
 func after_each() -> void:
+	Input.action_release("primary")
 	GameState.toast.disconnect(_on_toast)
 	GameState.block_input("test", false)
 	GameState.new_game()
@@ -225,3 +226,61 @@ func test_nhin_vao_vat_khong_phai_nha_khong_bao_loi() -> void:
 	assert_eq(ctrl.current.get("kind"), "world", "vật không có metadata thì coi là 'world'")
 	assert_eq(ctrl.current_action(), "")
 	assert_eq(ctrl.perform_primary(), -1, "không có gì để làm")
+
+
+func test_giu_chuot_chi_lap_lai_mot_loai_viec() -> void:
+	await _setup()
+	_aim(Vector3(5.5, 2.0, 3.5), Vector3(5.5, 0.0, 3.5))
+	Input.action_press("primary")
+	await wait_physics_frames(30)  # 0,5 giây: đủ cho vài nhịp lặp
+	assert_true(project.dig.is_done(Vector2i(5, 3)), "giữ chuột thì đào")
+	assert_false(project.pour.is_done(Vector2i(5, 3)), "đào xong không tự đổ bê tông khi vẫn giữ chuột")
+	_aim(Vector3(6.5, 2.0, 3.5), Vector3(6.5, 0.0, 3.5))
+	await wait_physics_frames(20)
+	assert_true(project.dig.is_done(Vector2i(6, 3)), "vẫn giữ chuột, lia sang ô khác thì đào tiếp")
+	Input.action_release("primary")
+	await wait_physics_frames(2)
+	Input.action_press("primary")
+	await wait_physics_frames(2)
+	assert_true(project.pour.is_done(Vector2i(6, 3)), "thả ra bấm lại thì mới đổ bê tông")
+
+
+func test_giu_chuot_chi_dat_mot_mon_noi_that() -> void:
+	await _setup()
+	_finish_all_but_furniture()
+	GameState.inventory.add("chair", 3)
+	await wait_physics_frames(2)
+	ctrl.set_mode(Mode.FURNITURE)
+	_aim(Vector3(4.5, 2.0, 4.0), Vector3(4.5, 0.0, 4.2))
+	Input.action_press("primary")
+	await wait_physics_frames(3)
+	assert_eq(project.furniture.size(), 1)
+	_aim(Vector3(6.5, 2.0, 4.0), Vector3(6.5, 0.0, 4.2))
+	await wait_physics_frames(40)  # quá nhịp lặp 0,4 giây
+	assert_eq(project.furniture.size(), 1, "mỗi lần bấm chỉ đặt một món")
+	Input.action_release("primary")
+	await wait_physics_frames(2)
+	Input.action_press("primary")
+	await wait_physics_frames(2)
+	assert_eq(project.furniture.size(), 2, "bấm lần nữa thì đặt món tiếp theo")
+
+
+func test_khong_dat_noi_that_chan_cua_di() -> void:
+	await _setup()
+	_finish_all_but_furniture()
+	GameState.inventory.add("chair", 1)
+	GameState.inventory.add("rug", 1)
+	await wait_physics_frames(2)
+	ctrl.set_mode(Mode.FURNITURE)
+	ctrl.cycle_selection(0)
+	assert_eq(ctrl.furniture_item, "chair")
+	# Cửa đi 0 ở tường trước (z = 6), tâm x = 4,9, mở vào trong nhà.
+	_aim(Vector3(4.9, 2.0, 5.2), Vector3(4.9, 0.0, 5.4))
+	assert_false(ctrl.placement.valid, "ghế đặt ngay sau cửa thì chắn lối")
+	assert_true(ctrl.placement.reason.contains("Chắn lối cửa"), ctrl.placement.reason)
+	_aim(Vector3(3.5, 2.0, 5.2), Vector3(3.5, 0.0, 5.4))
+	assert_true(ctrl.placement.valid, "lệch sang bên cửa thì được: " + ctrl.placement.reason)
+	ctrl.cycle_selection(1)
+	assert_eq(ctrl.furniture_item, "rug")
+	_aim(Vector3(4.9, 2.0, 4.7), Vector3(4.9, 0.0, 4.9))
+	assert_true(ctrl.placement.valid, "thảm nằm dưới cánh cửa nên được đặt: " + ctrl.placement.reason)

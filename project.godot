@@ -32,6 +32,7 @@ window/stretch/aspect="expand"
 3d_physics/layer_3="furniture"
 3d_physics/layer_4="interactable"
 3d_physics/layer_5="player"
+3d_physics/layer_6="clearance"
 
 [rendering]
 

@@ -4,7 +4,7 @@ extends PanelContainer
 
 const KEYS := [
 	["W A S D", "Đi lại (Shift chạy, Space nhảy)"],
-	["Chuột trái (giữ)", "Làm việc đang nhắm: đào, đổ, xây, lắp, lợp, trát, lát..."],
+	["Chuột trái", "Làm việc đang nhắm — giữ để làm liên tục"],
 	["1 2 3 4", "Chế độ: Xây dựng · Sơn · Nội thất · Nhặt đồ"],
 	["Lăn chuột / Q Z", "Đổi màu sơn / món nội thất"],
 	["R", "Xoay nội thất"],
