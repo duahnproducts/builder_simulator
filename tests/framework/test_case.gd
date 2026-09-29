@@ -60,6 +60,12 @@ func assert_vec_near(actual: Variant, expected: Variant, tolerance := 0.0001, ms
 		fail(_label("mong đợi %s nhưng nhận %s" % [str(expected), str(actual)], msg))
 
 
+func assert_rect_near(actual: Rect2, expected: Rect2, tolerance := 0.0001, msg := "") -> void:
+	var diff := (actual.position - expected.position).length() + (actual.size - expected.size).length()
+	if diff > tolerance:
+		fail(_label("mong đợi %s nhưng nhận %s" % [str(expected), str(actual)], msg))
+
+
 func assert_gt(actual: float, bound: float, msg := "") -> void:
 	if not actual > bound:
 		fail(_label("mong đợi > %s nhưng nhận %s" % [str(bound), str(actual)], msg))

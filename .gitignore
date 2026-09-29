@@ -21,6 +21,8 @@ build/
 # Godot — thư mục cache/import do Godot tự tạo lại (file .import và .uid thì CẦN commit)
 .godot/
 /android/
+# File tạm của tools/lint.sh (ghi đè Project Settings) — không bao giờ commit
+override.cfg
 
 # Kết quả chạy test / ảnh chụp tự động
 /test_output/

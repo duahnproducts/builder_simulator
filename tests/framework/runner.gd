@@ -86,8 +86,8 @@ func _run_all(filter: String) -> int:
 	var seconds := (Time.get_ticks_msec() - started) / 1000.0
 	print("")
 	print("Kết quả: %d đạt, %d hỏng (%.1f giây)" % [passed, failed.size(), seconds])
-	for name in failed:
-		print("  HỎNG: %s" % name)
+	for failed_name in failed:
+		print("  HỎNG: %s" % failed_name)
 	if passed == 0 and failed.is_empty():
 		print("Không tìm thấy test nào khớp bộ lọc.")
 		return 1
