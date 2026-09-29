@@ -12,6 +12,8 @@ const STATUS_ICON := {
 
 var build: BuildController
 var world: World
+## Đang mở một bảng giao diện: ẩn những phần chỉ cần khi đang chơi.
+var panel_mode := false
 
 var _money: Label
 var _reputation: Label
@@ -81,7 +83,7 @@ func current_plot_id() -> String:
 func refresh_project() -> void:
 	var plot_id := current_plot_id()
 	var p := GameState.project_at(plot_id)
-	_project_box.visible = p != null
+	_project_box.visible = p != null and not panel_mode
 	if p == null:
 		return
 	_project_title.text = _project_name(plot_id)
@@ -99,6 +101,19 @@ func refresh_project() -> void:
 		(row.get_child(1) as ProgressBar).value = p.stage_progress(order[i]) * 100.0
 	if p.is_complete() and plot_id != GameState.HOME_PLOT and GameState.active_contract != "":
 		_project_title.text += "\n→ Xong! Mở bảng hợp đồng (J) để nghiệm thu"
+
+
+## Mở bảng giao diện thì ẩn checklist, tâm ngắm, gợi ý và thanh công cụ (bảng che mất, chữ chồng lên nhau).
+func set_panel_mode(value: bool) -> void:
+	panel_mode = value
+	_crosshair.visible = not value
+	_hint.visible = not value
+	_hotbar_box.visible = not value
+	refresh_project()
+
+
+func is_project_visible() -> bool:
+	return _project_box.visible
 
 
 func show_toast(text: String, kind := "info") -> void:

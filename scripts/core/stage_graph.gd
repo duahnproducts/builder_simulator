@@ -27,33 +27,37 @@ func requires(id: String) -> Array[String]:
 
 
 ## Sắp xếp topo bằng thuật toán Kahn: lặp lại việc lấy ra đỉnh không còn phụ thuộc.
+## Trong các đỉnh đang sẵn sàng, luôn lấy đỉnh **khai báo sớm nhất** (hàng đợi ưu tiên theo thứ tự
+## khai báo), nên thứ tự ra đời tự nhiên: "trát → sơn" đi liền nhau thay vì bị "lát nền" chen giữa.
 ## Trả về mảng rỗng nếu có chu trình hoặc phụ thuộc vào giai đoạn không tồn tại.
 func topological_order() -> Array[String]:
-	var indegree: Dictionary = {}
-	var dependents: Dictionary = {}
-	for id in _ids:
-		indegree[id] = 0
-		dependents[id] = []
-	for id in _ids:
-		for r: String in _requires[id]:
-			if not indegree.has(r):
+	var index: Dictionary = {}
+	for i in _ids.size():
+		index[_ids[i]] = i
+	var indegree := PackedInt32Array()
+	indegree.resize(_ids.size())
+	var dependents: Array[PackedInt32Array] = []
+	dependents.resize(_ids.size())
+	for i in _ids.size():
+		for r: String in _requires[_ids[i]]:
+			if not index.has(r):
 				return []
-			indegree[id] += 1
-			dependents[r].append(id)
-	var queue: Array[String] = []
-	for id in _ids:
-		if indegree[id] == 0:
-			queue.append(id)
+			indegree[i] += 1
+			dependents[index[r]].append(i)
+	# `ready` luôn được giữ tăng dần (chèn đúng chỗ bằng tìm kiếm nhị phân), phần tử đầu là nhỏ nhất.
+	var ready := PackedInt32Array()
+	for i in _ids.size():
+		if indegree[i] == 0:
+			ready.append(i)
 	var order: Array[String] = []
-	var head := 0
-	while head < queue.size():
-		var id := queue[head]
-		head += 1
-		order.append(id)
-		for dependent: String in dependents[id]:
-			indegree[dependent] -= 1
-			if indegree[dependent] == 0:
-				queue.append(dependent)
+	while not ready.is_empty():
+		var i := ready[0]
+		ready.remove_at(0)
+		order.append(_ids[i])
+		for d in dependents[i]:
+			indegree[d] -= 1
+			if indegree[d] == 0:
+				ready.insert(ready.bsearch(d), d)
 	if order.size() != _ids.size():
 		return []
 	return order

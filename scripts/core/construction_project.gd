@@ -198,6 +198,8 @@ func stage_progress(stage: String) -> float:
 				var n := int(required_furniture[item_id])
 				need += n
 				have += mini(n, furniture_inside(item_id))
+			if need == 0:  # không bắt buộc món nào: xong ngay khi được phép bày đồ
+				return 1.0 if can_furnish() else 0.0
 			return _ratio(have, need)
 	return 0.0
 

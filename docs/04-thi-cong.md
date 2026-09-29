@@ -12,7 +12,10 @@ Code: `scripts/core/construction_project.gd`, `stage_graph.gd`.
 ```
 
 `StageGraph.topological_order()` dùng **thuật toán Kahn**: lặp lại việc lấy giai đoạn
-không còn phụ thuộc nào chưa xong. Nếu dữ liệu có chu trình, hàm trả về mảng rỗng (có test kiểm tra).
+không còn phụ thuộc nào chưa xong. Trong các giai đoạn đang sẵn sàng, luôn lấy giai đoạn **khai báo
+sớm nhất** (hàng đợi ưu tiên theo thứ tự khai báo, giữ bằng mảng sắp xếp + tìm kiếm nhị phân), nên
+thứ tự ra đời tự nhiên: … trát → sơn → lát nền → nội thất (hàng đợi FIFO thường sẽ cho "lát nền" chen
+giữa trát và sơn). Nếu dữ liệu có chu trình, hàm trả về mảng rỗng (có test kiểm tra).
 Checklist trên HUD hiển thị theo thứ tự này.
 
 Trạng thái mỗi giai đoạn: **LOCKED** (phụ thuộc chưa xong), **AVAILABLE**, **DONE**.

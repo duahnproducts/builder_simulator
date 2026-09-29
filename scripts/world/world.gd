@@ -112,6 +112,10 @@ func _build_environment_and_lamps() -> StandardMaterial3D:
 	environment.background_mode = Environment.BG_SKY
 	environment.sky = sky
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	# Chỉ lấy 60% ánh sáng môi trường từ bầu trời (xanh), phần còn lại là màu trắng ấm:
+	# trong nhà (chỉ được chiếu bởi ánh sáng môi trường) không bị ám xanh.
+	environment.ambient_light_sky_contribution = 0.6
+	environment.ambient_light_color = Color(1.0, 0.93, 0.84)
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	environment.fog_enabled = true
 	environment.fog_density = 0.0015

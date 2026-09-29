@@ -9,6 +9,8 @@ var help: HelpOverlay
 var panels: Dictionary = {}
 
 var _center: CenterContainer
+## Nền tối mờ phía sau bảng đang mở, cho chữ trên bảng dễ đọc.
+var _backdrop: ColorRect
 
 
 func setup(build: BuildController, world: World) -> void:
@@ -26,6 +28,13 @@ func setup(build: BuildController, world: World) -> void:
 	hud.setup(build, world)
 	help = HelpOverlay.new()
 	root.add_child(help)
+	_backdrop = ColorRect.new()
+	_backdrop.name = "Backdrop"
+	_backdrop.color = Color(0.02, 0.03, 0.05, 0.45)
+	_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_backdrop.visible = false
+	root.add_child(_backdrop)
 	_center = CenterContainer.new()
 	_center.name = "Panels"
 	_center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -79,6 +88,10 @@ func toggle_help() -> void:
 	help.visible = not help.visible
 
 
+func is_backdrop_visible() -> bool:
+	return _backdrop.visible
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
 		var current := open_panel_id()
@@ -109,6 +122,15 @@ func _unhandled_input(event: InputEvent) -> void:
 func _add_panel(panel: PanelBase) -> void:
 	_center.add_child(panel)
 	panels[panel.panel_id] = panel
+	panel.opened.connect(_on_panels_changed)
+	panel.closed.connect(_on_panels_changed)
+
+
+## Có bảng mở: hiện nền mờ và thu gọn HUD (ẩn checklist, tâm ngắm, gợi ý, thanh công cụ).
+func _on_panels_changed() -> void:
+	var any := not open_panel_id().is_empty()
+	_backdrop.visible = any
+	hud.set_panel_mode(any)
 
 
 func _on_saved(slot: String) -> void:

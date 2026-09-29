@@ -85,6 +85,7 @@ func test_trang_thai_ban_dau() -> void:
 	assert_false(p.is_complete())
 	assert_eq(p.stage_order()[0], "excavation")
 	assert_eq(p.stage_order()[-1], "furnish")
+	assert_eq(p.stage_progress("furnish"), 0.0, "chưa được bày đồ thì thanh nội thất trống")
 
 
 func test_do_mong_can_dao_truoc_va_can_xi_mang() -> void:
@@ -276,3 +277,12 @@ func test_tai_du_lieu_bi_sua_tay() -> void:
 	q.inventory.add("bed", 1)
 	q.required_furniture = {}
 	assert_eq(q.place_furniture("bed", Vector3.ZERO, 0.0), R.LOCKED)
+
+
+func test_khong_bat_buoc_noi_that_thi_xong_khi_duoc_bay_do() -> void:
+	var p := _project()
+	assert_eq(p.stage_progress("furnish"), 0.0, "đang khoá thì thanh tiến độ trống")
+	assert_eq(_build_all(p), 0)
+	assert_eq(p.stage_status("furnish"), S.DONE)
+	assert_eq(p.stage_progress("furnish"), 1.0)
+	assert_true(p.is_complete())

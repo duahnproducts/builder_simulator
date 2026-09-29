@@ -258,6 +258,20 @@ func test_thu_tu_topo_ton_trong_phu_thuoc() -> void:
 	for s: Dictionary in ConstructionProject.STAGES:
 		for req: String in s["requires"]:
 			assert_lt(order.find(req), order.find(s["id"]), "%s phải trước %s" % [req, s["id"]])
+	assert_eq(order, ["excavation", "foundation", "walls", "openings", "roof", "plaster", "paint", "floor",
+			"furnish"], "trong các giai đoạn sẵn sàng, cái khai báo trước đứng trước")
+
+
+func test_thu_tu_topo_uu_tien_thu_tu_khai_bao() -> void:
+	var g := StageGraph.new()
+	g.add_stage("goc", [])
+	g.add_stage("a", ["goc"])
+	g.add_stage("b", ["goc"])
+	g.add_stage("a2", ["a"])
+	g.add_stage("c", [])
+	# Hàng đợi FIFO sẽ cho: goc, c, a, b, a2 ("c" chen lên vì sẵn sàng từ đầu).
+	# Ưu tiên thứ tự khai báo: luôn lấy đỉnh sẵn sàng có chỉ số khai báo nhỏ nhất.
+	assert_eq(g.topological_order(), ["goc", "a", "b", "a2", "c"])
 
 
 func test_phat_hien_chu_trinh() -> void:

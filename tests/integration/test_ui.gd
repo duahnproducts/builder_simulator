@@ -196,6 +196,39 @@ func test_hud_nam_trong_man_hinh() -> void:
 	assert_vec_near(cross.get_center(), screen.get_center(), 2.0, "tâm ngắm ở giữa màn hình")
 
 
+func test_mo_bang_thi_hud_gon_lai_va_co_nen_mo() -> void:
+	await _setup()
+	GameState.accept_contract("hd01")
+	ui.hud.refresh_project()
+	assert_true(ui.hud.is_project_visible())
+	assert_false(ui.is_backdrop_visible())
+	ui.open_panel("shop")
+	assert_true(ui.is_backdrop_visible(), "mở bảng thì có nền mờ phía sau")
+	assert_true(ui.hud.panel_mode)
+	assert_false(ui.hud.is_project_visible(), "checklist không chồng lên bảng")
+	ui.open_panel("contracts")
+	assert_true(ui.is_backdrop_visible(), "chuyển bảng thì nền mờ vẫn còn")
+	ui.close_panel("contracts")
+	assert_false(ui.is_backdrop_visible())
+	assert_false(ui.hud.panel_mode)
+	assert_true(ui.hud.is_project_visible())
+
+
+func test_danh_sach_hop_dong_hien_ten_va_trang_thai() -> void:
+	await _setup()
+	var panel: ContractPanel = ui.panels["contracts"]
+	ui.open_panel("contracts")
+	assert_eq(panel.row_status_text("hd01"), "Có thể nhận")
+	assert_eq(panel.row_status_text("hd05"), "Chưa mở — cần thêm uy tín")
+	assert_eq(panel.pressed_rows(), ["hd01"])
+	panel.select_contract("hd03")
+	assert_eq(panel.pressed_rows(), ["hd03"], "chỉ một hàng được chọn")
+	panel.select_contract("hd01")
+	panel.accept()
+	assert_eq(panel.row_status_text("hd01"), "ĐANG LÀM", "nhận xong thì hàng cập nhật trạng thái")
+	assert_eq(panel.row_status_text("hd02"), "Chưa mở — cần thêm uy tín")
+
+
 func test_hud_cap_nhat() -> void:
 	await _setup()
 	GameState.buy("cement", 1)

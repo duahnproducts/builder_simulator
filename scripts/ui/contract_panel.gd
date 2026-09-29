@@ -13,7 +13,9 @@ const STATUS_TEXT := {
 
 var selected := ""
 
-var _list: ItemList
+## Mỗi hợp đồng một hàng (nút bật/tắt có 2 dòng: tên + trạng thái): id → Button.
+var _rows: Dictionary = {}
+var _group := ButtonGroup.new()
 var _ids: Array[String] = []
 var _title: Label
 var _desc: Label
@@ -31,12 +33,20 @@ func _ready() -> void:
 	var split := HBoxContainer.new()
 	split.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	split.add_theme_constant_override("separation", 16)
-	_list = ItemList.new()
-	_list.custom_minimum_size = Vector2(340, 0)
-	_list.max_text_lines = 2
-	_list.auto_height = true
-	_list.item_selected.connect(_on_item_selected)
-	split.add_child(_list)
+	# ItemList chỉ hiện một dòng mỗi mục (ký tự xuống dòng bị bỏ), nên tự dựng từng hàng.
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(340, 0)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	var list := VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 6)
+	for c in Catalog.contracts():
+		var id := str(c["id"])
+		_ids.append(id)
+		_rows[id] = _make_row(id, str(c.get("title", id)))
+		list.add_child(_rows[id])
+	scroll.add_child(list)
+	split.add_child(scroll)
 	var right := VBoxContainer.new()
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_title = UITheme.label("", 22, UITheme.ACCENT)
@@ -71,19 +81,32 @@ func _ready() -> void:
 
 
 func refresh() -> void:
-	_list.clear()
-	_ids.clear()
-	for c in Catalog.contracts():
-		var id := str(c["id"])
+	for id in _ids:
 		var status := GameState.contract_status(id)
-		var index := _list.add_item("%s\n%s" % [str(c.get("title", id)), STATUS_TEXT.get(status, status)])
-		_list.set_item_custom_fg_color(index, _status_color(status))
-		_ids.append(id)
+		var label := (_rows[id] as Button).find_child("Status", true, false) as Label
+		label.text = STATUS_TEXT.get(status, status)
+		label.add_theme_color_override("font_color", _status_color(status))
 	if selected.is_empty() or not _ids.has(selected):
 		selected = _default_selection()
-	if _ids.has(selected):
-		_list.select(_ids.find(selected))
+	# set_pressed_no_signal() không tự bỏ chọn các nút khác trong ButtonGroup, nên đặt cho từng hàng.
+	for id in _ids:
+		(_rows[id] as Button).set_pressed_no_signal(id == selected)
 	_show(selected)
+
+
+## Các hợp đồng đang được đánh dấu chọn trong danh sách (cho test; đúng ra chỉ có một).
+func pressed_rows() -> Array[String]:
+	var out: Array[String] = []
+	for id in _ids:
+		if (_rows[id] as Button).button_pressed:
+			out.append(id)
+	return out
+
+
+## Chữ trạng thái đang hiện ở hàng của hợp đồng `id` (cho test).
+func row_status_text(id: String) -> String:
+	var row: Button = _rows.get(id)
+	return (row.find_child("Status", true, false) as Label).text if row != null else ""
 
 
 func select_contract(id: String) -> void:
@@ -184,9 +207,34 @@ static func _status_color(status: String) -> Color:
 	return UITheme.TEXT_DIM
 
 
-func _on_item_selected(index: int) -> void:
-	selected = _ids[index]
-	_show(selected)
+func _make_row(id: String, title: String) -> Button:
+	var row := Button.new()
+	row.name = "Row_" + id
+	row.toggle_mode = true
+	row.button_group = _group
+	row.focus_mode = Control.FOCUS_NONE
+	row.custom_minimum_size = Vector2(0, 62)
+	row.pressed.connect(select_contract.bind(id))
+	var margin := MarginContainer.new()
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for side: String in ["left", "right", "top", "bottom"]:
+		margin.add_theme_constant_override("margin_" + side, 10 if side in ["left", "right"] else 6)
+	var vb := VBoxContainer.new()
+	vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vb.add_theme_constant_override("separation", 2)
+	var title_label := UITheme.label(title, 17)
+	title_label.name = "Title"
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vb.add_child(title_label)
+	var status_label := UITheme.label("", 15)
+	status_label.name = "Status"
+	status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vb.add_child(status_label)
+	margin.add_child(vb)
+	row.add_child(margin)
+	return row
 
 
 func _on_contracts_changed() -> void:
